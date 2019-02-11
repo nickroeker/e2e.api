@@ -1,0 +1,39 @@
+[MASTER]
+jobs=4
+
+
+[FORMAT]
+# Google Python Style Guide is 80, PEP-8 is 79
+max-line-length=80
+
+# Additionally allow imports to be "long lines" (Google Python Style Guide)
+# Additionally allow type: comments to be "long lines" (convenience)
+ignore-long-lines=(^\s*(# )?<?https?://\S+>?$)|(^import\s\S)|(^from\s\S+\simport\s\S)|(# type:\s\S+$)
+
+
+[MESSAGES CONTROL]
+disable=
+    # flake8 w/ pep8-naming plugin catches these better
+    invalid-name,
+    # covered better by mypy, frequent false positives https://github.com/PyCQA/pylint/issues/2258
+    no-name-in-module,
+    no-member,
+
+
+[BASIC]
+good-names=
+    # Exception handling
+    e,
+    # Ignored values
+    _,
+
+# Override to match line length limit
+function-rgx=[a-z_][a-z0-9_]{2,80}$
+
+
+[MISCELLANEOUS]
+
+# Allow FIXME to be checked in, but TODO/XXX can be used as reminders in local dev pre-push
+notes=
+    TODO,
+    XXX,
