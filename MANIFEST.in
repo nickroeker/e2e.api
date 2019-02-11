@@ -1,0 +1,15 @@
+graft e2e
+prune tests
+
+include LICENSE
+include *.md
+include *.rst
+
+exclude *.pyc
+
+exclude .flake8
+exclude .isort.cfg
+exclude .pylintrc
+exclude .style.yapf
+exclude mypy.ini
+exclude tox.ini
