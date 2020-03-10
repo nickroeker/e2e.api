@@ -32,7 +32,7 @@ setup(
     extras_require={
         'dev': [
             'tox',
-            'pytest'
+            'pytest',
             'requests_mock',
             'responses',
             'setuptools>="40.1.0"',
