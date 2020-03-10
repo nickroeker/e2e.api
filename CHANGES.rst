@@ -4,7 +4,7 @@ Changelog for e2e.api
 0.1.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fixed mypy's ability to see the package.
 
 
 0.1.0 (2019-02-10)
