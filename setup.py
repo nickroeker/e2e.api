@@ -1,7 +1,7 @@
 from setuptools import find_namespace_packages
 from setuptools import setup
 
-version = '0.1.2'
+version = '0.1.3.dev0'
 
 setup(
     name='e2e.api',
