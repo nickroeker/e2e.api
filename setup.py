@@ -11,7 +11,8 @@ setup(
     author="Nic Kroeker",
     author_email='',
     license='Apache 2.0',
-    packages=find_namespace_packages(include=['e2e.*']),
+    packages=find_namespace_packages(include=['e2e', 'e2e.*']),
+    namespace_packages=['e2e'],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
@@ -25,6 +26,10 @@ setup(
         'Topic :: Software Development :: Testing',
         'Topic :: Software Development :: Testing :: Acceptance',
     ],
+    package_data={
+        'e2e': ['*.pyi'],
+        'e2e.api': ['py.typed'],
+    },
     install_requires=[
         'requests>=2.1.0',
         'typing;python_version<"3.5"',
