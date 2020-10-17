@@ -4,23 +4,15 @@ Changelog for e2e.api
 0.1.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Dropped official support for Python 3.5, add Python 3.8
+- Adopted linter and setup/build configs from e2e.common
+- Prepare to use e2e.common for modelling base
 
 
 0.1.2 (2020-03-10)
 ------------------
 
 - Fixed mypy's ability to see the package when installed via wheel.
-
-
-0.1.1 (2020-03-10)
-------------------
-
 - Fixed mypy's ability to see the package.
 - Fixed local dev builds (malformed dependencies).
-
-
-0.1.0 (2019-02-10)
-------------------
-
 - Initial alpha release of ``e2e.api``.

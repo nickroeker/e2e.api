@@ -7,8 +7,6 @@
 
 ## Type-hinting
 * Redo everything, make use of TypeVar/Generic where needed.
-* Investigate proper packaging for source + type-hints.
-* Probably use stubs for earlier compatibility.
 
 ## Unit-tests
 * Finish conversion to `pytest` and `responses`.

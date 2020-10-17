@@ -1,5 +1,0 @@
-[style]
-based_on_style = google
-
-; Fix for PEP-8 compat
-align_closing_bracket_with_visual_indent = true

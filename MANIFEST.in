@@ -1,15 +1,11 @@
 graft e2e
-prune tests
+graft tests
 
 include LICENSE
 include *.md
 include *.rst
+include Makefile
+include tox.ini
+include .pylintrc
 
 exclude *.pyc
-
-exclude .flake8
-exclude .isort.cfg
-exclude .pylintrc
-exclude .style.yapf
-exclude mypy.ini
-exclude tox.ini
