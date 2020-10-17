@@ -21,6 +21,7 @@ class BasicEndpoint(base.ClassInfo):
         checked: Enables/disables the default status code checks, if defined.
             See :py:meth:`~endpoint.BasicEndpoint.set_status_checking()`.
     """
+
     # pylint: disable=arguments-differ
     __REQ_DOC_FMT = """Perform a {} request on this endpoint.
 
@@ -38,7 +39,7 @@ class BasicEndpoint(base.ClassInfo):
         self._checked = checked
         # Ensure the URI starts with a slash
         str_uri = str(api_uri)
-        self._uri = ('/' * (not str_uri.startswith('/'))) + str_uri
+        self._uri = ("/" * (not str_uri.startswith("/"))) + str_uri
 
     @property
     def uri(self) -> str:
@@ -62,18 +63,22 @@ class BasicEndpoint(base.ClassInfo):
         self._checked = checked
 
     # TODO: Use Generic to make the typing more accurate for subclasses
-    def extend(self, uri: str) -> 'BasicEndpoint':
+    def extend(self, uri: str) -> "BasicEndpoint":
         """Clone this endpoint, but with an extended URI from this one."""
         return self.__class__(self._api, self._extend_uri(uri))
 
     def _extend_uri(self, uri_extension: Union[int, str] = None) -> str:
-        slashify = self.uri.endswith('/')
+        slashify = self.uri.endswith("/")
         str_id = str(uri_extension)
-        return self.uri if not uri_extension else '{}/{}{}'.format(
-            self.uri, str_id, '/' * slashify).replace('//', '/')
+        return (
+            self.uri
+            if not uri_extension
+            else "{}/{}{}".format(self.uri, str_id, "/" * slashify).replace("//", "/")
+        )
 
-    def request(self, method: str, uri_extension: str = '',
-                **kwargs: Any) -> requests.Response:
+    def request(
+        self, method: str, uri_extension: str = "", **kwargs: Any
+    ) -> requests.Response:
         """Performs a request on this endpoint, optionally extending the URI.
 
         You may wish to "extend" the URI for gettings specific resources, e.g.::
@@ -89,36 +94,32 @@ class BasicEndpoint(base.ClassInfo):
             ``**kwargs``: Passed along to underlying :class:`~e2e.api.RestApi`
                 request.
         """
-        return self._api.request(method, self._extend_uri(uri_extension),
-                                 **kwargs)
+        return self._api.request(method, self._extend_uri(uri_extension), **kwargs)
 
-    def get(self, uri_extension: str = '', **kwargs: Any) -> requests.Response:
-        return self.request('GET', uri_extension, **kwargs)
+    def get(self, uri_extension: str = "", **kwargs: Any) -> requests.Response:
+        return self.request("GET", uri_extension, **kwargs)
 
-    def put(self, uri_extension: str = '', **kwargs: Any) -> requests.Response:
-        return self.request('PUT', uri_extension, **kwargs)
+    def put(self, uri_extension: str = "", **kwargs: Any) -> requests.Response:
+        return self.request("PUT", uri_extension, **kwargs)
 
-    def post(self, uri_extension: str = '', **kwargs: Any) -> requests.Response:
-        return self.request('POST', uri_extension, **kwargs)
+    def post(self, uri_extension: str = "", **kwargs: Any) -> requests.Response:
+        return self.request("POST", uri_extension, **kwargs)
 
-    def patch(self, uri_extension: str = '',
-              **kwargs: Any) -> requests.Response:
-        return self.request('PATCH', uri_extension, **kwargs)
+    def patch(self, uri_extension: str = "", **kwargs: Any) -> requests.Response:
+        return self.request("PATCH", uri_extension, **kwargs)
 
-    def delete(self, uri_extension: str = '',
-               **kwargs: Any) -> requests.Response:
-        return self.request('DELETE', uri_extension, **kwargs)
+    def delete(self, uri_extension: str = "", **kwargs: Any) -> requests.Response:
+        return self.request("DELETE", uri_extension, **kwargs)
 
-    def options(self, uri_extension: str = '',
-                **kwargs: Any) -> requests.Response:
-        return self.request('OPTIONS', uri_extension, **kwargs)
+    def options(self, uri_extension: str = "", **kwargs: Any) -> requests.Response:
+        return self.request("OPTIONS", uri_extension, **kwargs)
 
-    get.__doc__ = __REQ_DOC_FMT.format('GET')
-    put.__doc__ = __REQ_DOC_FMT.format('PUT')
-    post.__doc__ = __REQ_DOC_FMT.format('POST')
-    patch.__doc__ = __REQ_DOC_FMT.format('PATCH')
-    delete.__doc__ = __REQ_DOC_FMT.format('DELETE')
-    options.__doc__ = __REQ_DOC_FMT.format('OPTIONS')
+    get.__doc__ = __REQ_DOC_FMT.format("GET")
+    put.__doc__ = __REQ_DOC_FMT.format("PUT")
+    post.__doc__ = __REQ_DOC_FMT.format("POST")
+    patch.__doc__ = __REQ_DOC_FMT.format("PATCH")
+    delete.__doc__ = __REQ_DOC_FMT.format("DELETE")
+    options.__doc__ = __REQ_DOC_FMT.format("OPTIONS")
 
 
 # TODO: Liskov says bad inheritance, I agree. Fix up this implementation.

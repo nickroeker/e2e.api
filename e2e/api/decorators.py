@@ -26,8 +26,7 @@ class ResponseDict(Dict[str, Any]):
 
 
 # FIXME: There's probably work to be done here for type correctness
-def jsonify(responder: Callable[..., requests.Response]
-            ) -> Callable[..., ResponseDict]:
+def jsonify(responder: Callable[..., requests.Response]) -> Callable[..., ResponseDict]:
     """Converts a response to a :class:`~decorators.ResponseDict`.
 
     An empty server response will be treated as an empty dict instead (and the
@@ -44,12 +43,13 @@ def jsonify(responder: Callable[..., requests.Response]
     return func_wrapper
 
 
-T_R = TypeVar('T_R', requests.Response, ResponseDict)
+T_R = TypeVar("T_R", requests.Response, ResponseDict)
 
 
 # FIXME: There's probably work to be done here for type correctness
-def default_status_check(expected_status_codes: types.StatusCodeOrSeq
-                         ) -> Callable[..., Callable[..., T_R]]:
+def default_status_check(
+    expected_status_codes: types.StatusCodeOrSeq,
+) -> Callable[..., Callable[..., T_R]]:
     """Inserts a configurable status check into the request.
 
     The status check must be enabled in the implementing class via a truthy
@@ -60,13 +60,12 @@ def default_status_check(expected_status_codes: types.StatusCodeOrSeq
     """
 
     def decorator(responder: Callable[..., T_R]) -> Callable[..., T_R]:
-
         @functools.wraps(responder)
         def func_wrapper(self: Any, *args: Any, **kwargs: Any) -> T_R:
             # FIXME: There should be a better way for this, one day.
             # Intentionally gross, pylint: disable=protected-access
-            if self._checked and 'expected_status' not in kwargs:
-                kwargs['expected_status'] = expected_status_codes
+            if self._checked and "expected_status" not in kwargs:
+                kwargs["expected_status"] = expected_status_codes
             return responder(self, *args, **kwargs)
 
         return func_wrapper

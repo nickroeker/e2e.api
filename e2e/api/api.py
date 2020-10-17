@@ -17,11 +17,11 @@ any service-specific behaviour. For example,
 - Extra health checks on responses (e.g. if a ``res.success` is ``False``).
 """
 
-import logging
 import json
-import textwrap
+import logging
 import pprint
 import re
+import textwrap
 from typing import Any
 from typing import Dict
 from typing import Optional
@@ -60,8 +60,9 @@ class RestApi(base.ClassInfo):
             You can use this to share one session across services, for example.
     """
 
-    class ExcFormatter():
+    class ExcFormatter:
         """Formatting helper for raised exceptions."""
+
         # TODO: This is all just terrible spaghetti
         EXC_INDENT_STEP = 4
 
@@ -73,8 +74,9 @@ class RestApi(base.ClassInfo):
                 replace_whitespace=False,
                 drop_whitespace=False,
                 break_on_hyphens=False,
-                initial_indent=' ' * (cls.EXC_INDENT_STEP * level),
-                subsequent_indent=' ' * (cls.EXC_INDENT_STEP * level))
+                initial_indent=" " * (cls.EXC_INDENT_STEP * level),
+                subsequent_indent=" " * (cls.EXC_INDENT_STEP * level),
+            )
 
         @classmethod
         def format(cls, to_format: str, level: int = 0) -> str:
@@ -82,13 +84,15 @@ class RestApi(base.ClassInfo):
             lines = cls.__get_textwrapper(level).wrap(str(to_format))
             if len(lines) >= 5:
                 lines = lines[:5]
-                lines += [' ' * (cls.EXC_INDENT_STEP * level) + '<truncated>']
-            return '\n'.join(lines)
+                lines += [" " * (cls.EXC_INDENT_STEP * level) + "<truncated>"]
+            return "\n".join(lines)
 
-    def __init__(self,
-                 api_root: str,
-                 timeout: float = 10.0,
-                 session: Optional[requests.Session] = None) -> None:
+    def __init__(
+        self,
+        api_root: str,
+        timeout: float = 10.0,
+        session: Optional[requests.Session] = None,
+    ) -> None:
         self._session = session if session is not None else requests.Session()
         self._api_root = api_root
         self._timeout = timeout
@@ -117,12 +121,14 @@ class RestApi(base.ClassInfo):
         cookies = self._session.cookies  # type: requests.cookies.RequestsCookieJar
         return cookies
 
-    def request(self,
-                method: str,
-                uri: str,
-                expected_status: Optional[types.StatusCodeOrSeq] = None,
-                status_msg: Optional[str] = None,
-                **kwargs: Any) -> requests.Response:
+    def request(
+        self,
+        method: str,
+        uri: str,
+        expected_status: Optional[types.StatusCodeOrSeq] = None,
+        status_msg: Optional[str] = None,
+        **kwargs: Any
+    ) -> requests.Response:
         """Base request method providing additional controls.
 
         Uses this `RestApi`'s default timeout for the request.
@@ -154,40 +160,47 @@ class RestApi(base.ClassInfo):
                 is raised while making the request.
 
         """
-        exp_status_codes = (expected_status,) if isinstance(
-            expected_status, int) else expected_status
+        exp_status_codes = (
+            (expected_status,) if isinstance(expected_status, int) else expected_status
+        )
 
         # Default timeout
-        args_to_pass = {'timeout': self._timeout}  # type: Dict[str, Any]
+        args_to_pass = {"timeout": self._timeout}  # type: Dict[str, Any]
         args_to_pass.update(kwargs)
 
         LOGGER.debug("%s %s", method, uri)
 
         req_url = self._api_root + uri
         try:
-            r = self._session.request(method, req_url,
-                                      **args_to_pass)  # type: requests.Response
+            r = self._session.request(
+                method, req_url, **args_to_pass
+            )  # type: requests.Response
         except requests.exceptions.RequestException as e:
             # TODO: This is all just terrible spaghetti
 
             msg = "Exception raised on '{} {}'\n".format(method, req_url)
             msg += "    Request params (next line):\n        {}\n".format(
-                kwargs if kwargs else "")
+                kwargs if kwargs else ""
+            )
             msg += "    Exception (next line):\n        {}: {}".format(
-                base.ClassInfo.fqualname_of(e), str(e))
+                base.ClassInfo.fqualname_of(e), str(e)
+            )
             raise exceptions.IncompleteRequestError(msg) from e
 
         if exp_status_codes and r.status_code not in exp_status_codes:
             msg = "Unexpected status ({} {}) from '{} {}'\n".format(
-                r.status_code, r.reason, method, req_url)
+                r.status_code, r.reason, method, req_url
+            )
             msg += "    Request params (next line):\n        {}\n".format(
-                pprint.pformat(kwargs, indent=4))
+                pprint.pformat(kwargs, indent=4)
+            )
 
             try:
-                res_body = 'JSON', RestApi.ExcFormatter.format(
-                    pprint.pformat(r.json(), indent=4), 2)
+                res_body = "JSON", RestApi.ExcFormatter.format(
+                    pprint.pformat(r.json(), indent=4), 2
+                )
             except json.JSONDecodeError:
-                res_body = 'text', RestApi.ExcFormatter.format(r.content, 2)
+                res_body = "text", RestApi.ExcFormatter.format(r.content, 2)
             msg += "    Response {} (next line):\n{}\n".format(*res_body)
 
             if status_msg:
@@ -196,55 +209,65 @@ class RestApi(base.ClassInfo):
 
         return r
 
-    def get(self,
-            uri: str,
-            expected_status: Optional[types.StatusCodeOrSeq] = None,
-            status_msg: Optional[str] = None,
-            **kwargs: Any) -> requests.Response:
+    def get(
+        self,
+        uri: str,
+        expected_status: Optional[types.StatusCodeOrSeq] = None,
+        status_msg: Optional[str] = None,
+        **kwargs: Any
+    ) -> requests.Response:
         """Uses GET as the `method` for :py:meth:`~api.RestApi.request`."""
-        return self.request('GET', uri, expected_status, status_msg, **kwargs)
+        return self.request("GET", uri, expected_status, status_msg, **kwargs)
 
-    def post(self,
-             uri: str,
-             expected_status: Optional[types.StatusCodeOrSeq] = None,
-             status_msg: Optional[str] = None,
-             **kwargs: Any) -> requests.Response:
+    def post(
+        self,
+        uri: str,
+        expected_status: Optional[types.StatusCodeOrSeq] = None,
+        status_msg: Optional[str] = None,
+        **kwargs: Any
+    ) -> requests.Response:
         """Uses POST as the `method` for :py:meth:`~api.RestApi.request`."""
-        return self.request('POST', uri, expected_status, status_msg, **kwargs)
+        return self.request("POST", uri, expected_status, status_msg, **kwargs)
 
-    def put(self,
-            uri: str,
-            expected_status: Optional[types.StatusCodeOrSeq] = None,
-            status_msg: Optional[str] = None,
-            **kwargs: Any) -> requests.Response:
+    def put(
+        self,
+        uri: str,
+        expected_status: Optional[types.StatusCodeOrSeq] = None,
+        status_msg: Optional[str] = None,
+        **kwargs: Any
+    ) -> requests.Response:
         """Uses PUT as the `method` for :py:meth:`~api.RestApi.request`."""
-        return self.request('PUT', uri, expected_status, status_msg, **kwargs)
+        return self.request("PUT", uri, expected_status, status_msg, **kwargs)
 
-    def patch(self,
-              uri: str,
-              expected_status: Optional[types.StatusCodeOrSeq] = None,
-              status_msg: Optional[str] = None,
-              **kwargs: Any) -> requests.Response:
+    def patch(
+        self,
+        uri: str,
+        expected_status: Optional[types.StatusCodeOrSeq] = None,
+        status_msg: Optional[str] = None,
+        **kwargs: Any
+    ) -> requests.Response:
         """Uses PATCH as the `method` for :py:meth:`~api.RestApi.request`."""
-        return self.request('PATCH', uri, expected_status, status_msg, **kwargs)
+        return self.request("PATCH", uri, expected_status, status_msg, **kwargs)
 
-    def delete(self,
-               uri: str,
-               expected_status: Optional[types.StatusCodeOrSeq] = None,
-               status_msg: Optional[str] = None,
-               **kwargs: Any) -> requests.Response:
+    def delete(
+        self,
+        uri: str,
+        expected_status: Optional[types.StatusCodeOrSeq] = None,
+        status_msg: Optional[str] = None,
+        **kwargs: Any
+    ) -> requests.Response:
         """Uses DELETE as the `method` for :py:meth:`~api.RestApi.request`."""
-        return self.request('DELETE', uri, expected_status, status_msg,
-                            **kwargs)
+        return self.request("DELETE", uri, expected_status, status_msg, **kwargs)
 
-    def options(self,
-                uri: str,
-                expected_status: Optional[types.StatusCodeOrSeq] = None,
-                status_msg: Optional[str] = None,
-                **kwargs: Any) -> requests.Response:
+    def options(
+        self,
+        uri: str,
+        expected_status: Optional[types.StatusCodeOrSeq] = None,
+        status_msg: Optional[str] = None,
+        **kwargs: Any
+    ) -> requests.Response:
         """Uses OPTIONS as the `method` for :py:meth:`~api.RestApi.request`."""
-        return self.request('OPTIONS', uri, expected_status, status_msg,
-                            **kwargs)
+        return self.request("OPTIONS", uri, expected_status, status_msg, **kwargs)
 
     @staticmethod
     def normalize_url(url: str) -> str:
@@ -260,17 +283,24 @@ class RestApi(base.ClassInfo):
         Returns:
             The provided URL, normalized.
         """
-        default_ports = [('https', 443), ('http', 80)]
+        default_ports = [("https", 443), ("http", 80)]
         parsed = urlsplit(url)
         if (parsed.scheme, parsed.port) in default_ports:
-            return urlunsplit((parsed.scheme, parsed.hostname.lower(),
-                               re.sub(r'/+', r'/', parsed.path), parsed.query,
-                               parsed.fragment))
+            return urlunsplit(
+                (
+                    parsed.scheme,
+                    parsed.hostname.lower(),
+                    re.sub(r"/+", r"/", parsed.path),
+                    parsed.query,
+                    parsed.fragment,
+                )
+            )
         return urlunsplit(parsed)
 
     def __str__(self) -> str:
-        return '{}({})'.format(self.__class__.__qualname__, self.url)
+        return "{}({})".format(self.__class__.__qualname__, self.url)
 
     def __repr__(self) -> str:
-        return '{}({}, timeout={})'.format(self.__fqualname__, repr(self.url),
-                                           repr(self._timeout))
+        return "{}({}, timeout={})".format(
+            self.__fqualname__, repr(self.url), repr(self._timeout)
+        )

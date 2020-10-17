@@ -3,7 +3,7 @@
 from typing import Any
 
 
-class ClassInfo():
+class ClassInfo:
     """Methods for common class info."""
 
     @property
@@ -22,8 +22,7 @@ class ClassInfo():
     @staticmethod
     def fqualname_of(obj: Any) -> str:
         """Gets the fully-qualified name for the given object."""
-        return "{}.{}".format(obj.__class__.__module__,
-                              obj.__class__.__qualname__)
+        return "{}.{}".format(obj.__class__.__module__, obj.__class__.__qualname__)
 
     @staticmethod
     def fname_of(obj: Any) -> str:
